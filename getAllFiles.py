@@ -1,6 +1,6 @@
 import os,csv
 
-with open("D:/temp/MyCSVExport.csv",'w+',newline='',encoding="utf-8") as f:
+with open("c:\Dropbox\C#\RenamePhotos\MyCSVExport.csv",'w+',newline='',encoding="utf-8") as f:
   w=csv.writer(f,delimiter = ";")
   root_fld_name=r'd:\photo'
   #root_fld_name=r'd:\temp'
@@ -10,7 +10,7 @@ with open("D:/temp/MyCSVExport.csv",'w+',newline='',encoding="utf-8") as f:
         info = os.stat(fullName)
         size=info.st_size
         ctime=info.st_mtime
-        fullData=[fullName,filename,path,ctime,size]
+        fullData=[fullName,filename,ctime,size]
         w.writerow(fullData)
      print(path)
       #print(path)
