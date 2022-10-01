@@ -8,12 +8,12 @@ namespace SuspiciousFolders.Classes {
     public class FolderData {
         public FolderData(string _path) {
             Path = _path;
-            Files = new List<string>();
+            Files = new Dictionary<string, string>();
             Directories= new List<string>(); 
         }
 
         public string Path { get; set; }
-        public List<string> Files{get; set; }   
+        public Dictionary<string,string> Files{get; set; }   
         public List<string> Directories{ get; set; }
 
         public int FilesCount {
