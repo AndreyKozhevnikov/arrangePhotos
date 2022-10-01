@@ -10,14 +10,16 @@ namespace MovePhotos.Tests {
     [TestFixture]
     public class PhotoWorkerTests {
         [Test]
-        public void Test() {
+        public void GetFolderNameTest() {
             //arrange
             var wrk = new PhotoWorker();
             var photoDate = "2022-08-17";
             //act
-            var res = wrk.GetFolderName(photoDate);
+            var res = wrk.GetCommonFolderName(photoDate);
             //assert
-            Assert.AreEqual("2022-08-01 Common", res);
+            Assert.AreEqual("2022-08-01 CommonGL", res);
         }
+        
+      
     }
 }

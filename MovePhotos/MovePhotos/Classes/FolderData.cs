@@ -10,9 +10,14 @@ namespace MovePhotos.Classes {
             Name = _name;
             Photos = new List<PhotoData>();
         }
-        public string Name{ get; set; }
-        public bool Exists{ get; set; }
-        public List<PhotoData> Photos{ get; set; }
-        public string TargetPath{ get; set; }
+        public string Name { get; set; }
+        public bool Exists { get; set; }
+        public List<PhotoData> Photos { get; set; }
+        public string TargetPath { get; set; }
+        public int FileCount {
+            get {
+                return Photos.Count;
+            }
+        }
     }
 }

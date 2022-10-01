@@ -11,9 +11,11 @@ namespace SuspiciousFolders.Classes {
     public class FolderWorker {
 
         public void Process() {
+            Console.WriteLine("start");
             var rootFolder = GetRootPath();
             var susFolders = GetSuspiciousFolders(rootFolder);
             ExportData(susFolders);
+            Console.WriteLine("end");
         }
         string GetRootPath() {
             string path = File.ReadAllText("rootPath.txt");
@@ -26,7 +28,7 @@ namespace SuspiciousFolders.Classes {
             };
             string jsonString = JsonSerializer.Serialize(folders, options);
 
-            File.WriteAllTextAsync(@"c:\temp\susFolders.json", jsonString);
+           File.WriteAllText(@"c:\temp\susFolders.json", jsonString);
         }
 
         public List<FolderData> GetSuspiciousFolders(string rootPath) {

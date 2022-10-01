@@ -16,6 +16,7 @@ namespace MovePhotos.Classes {
         public string SourcePath { get; set; }
         public bool IsExists { get; set; }
         public string DestinationPath { get; set; }
+        public bool ShouldCopy { get; set; }
 
     }
 }
