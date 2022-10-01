@@ -13,7 +13,7 @@ namespace SuspiciousFolders.Tests {
         public void GetPhotoModifiedTimeTest() {
             //arrange
             var wrk = new FolderWorker();
-            var path = @"c:\tempPhoto\testPhoto\IMG_0007.JPG";
+            var path = @"c:\tempPhototest33\testPhoto\IMG_0007.JPG";
             //act
             var res = wrk.GetPhotoModifiedTime(path);
             //assert

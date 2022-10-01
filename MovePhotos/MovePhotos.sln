@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovePhotos", "MovePhotos\MovePhotos.csproj", "{6AB0DD9A-F5AA-4C02-B63C-7AABD673AB53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6AB0DD9A-F5AA-4C02-B63C-7AABD673AB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB0DD9A-F5AA-4C02-B63C-7AABD673AB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB0DD9A-F5AA-4C02-B63C-7AABD673AB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB0DD9A-F5AA-4C02-B63C-7AABD673AB53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06B9D2CE-D311-4556-A65B-C968A35F895D}
+	EndGlobalSection
+EndGlobal

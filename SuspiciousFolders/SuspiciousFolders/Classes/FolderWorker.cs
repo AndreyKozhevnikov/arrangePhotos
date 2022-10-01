@@ -11,9 +11,13 @@ namespace SuspiciousFolders.Classes {
     public class FolderWorker {
 
         public void Process() {
-            var rootFolder = @"c:\tempPhoto";
+            var rootFolder = GetRootPath();
             var susFolders = GetSuspiciousFolders(rootFolder);
             ExportData(susFolders);
+        }
+        string GetRootPath() {
+            string path = File.ReadAllText("rootPath.txt");
+            return path;
         }
         public void ExportData(List<FolderData> folders) {
             var options = new JsonSerializerOptions {
