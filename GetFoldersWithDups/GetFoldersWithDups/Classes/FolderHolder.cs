@@ -21,12 +21,13 @@ namespace GetFoldersWithDups.Classes {
             Name = _name;
             PhotoNames = new List<string>();
         }
-        public string Name { get; set; }
-        public List<string> PhotoNames { get; set; }
         public int PhotoCount {
             get {
                 return PhotoNames.Count;
             }
         }
+        public string Name { get; set; }
+        public List<string> PhotoNames { get; set; }
+    
     }
 }

@@ -1,8 +1,8 @@
 import os,csv
 
-with open("c:\Dropbox\C#\RenamePhotos\MyCSVExport.csv",'w+',newline='',encoding="utf-8") as f:
+with open(r"c:\temp\MyCSVExport.csv",'w+',newline='',encoding="utf-8") as f:
   w=csv.writer(f,delimiter = ";")
-  root_fld_name=r'd:\photo'
+  root_fld_name=r'f:\photo'
   #root_fld_name=r'd:\temp'
   for path,tst,  files in os.walk(root_fld_name):
      for filename in files:

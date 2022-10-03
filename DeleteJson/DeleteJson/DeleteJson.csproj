@@ -7,10 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="FileInstances">
-      <HintPath>..\..\CreateIndicies\FileInstances\bin\Debug\net6.0\FileInstances.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

@@ -1,4 +1,5 @@
 ﻿using FileTagExtract;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,16 +19,25 @@ namespace MovePhotos.Classes {
             string sourceFolder;
             string destinationFolder;
             bool copyFiles;
+            bool isExportFileExists;
             Console.WriteLine("start");
-            GetConfig(out sourceFolder, out destinationFolder, out copyFiles);
+            GetConfig(out sourceFolder, out destinationFolder, out copyFiles, out isExportFileExists);
             Dictionary<string, FolderData> foldersToMove = new Dictionary<string, FolderData>();
-            List<PhotoData> problemPhotos = new List<PhotoData>();
-            Console.WriteLine("process");
-            ProcessFolders(sourceFolder, destinationFolder, foldersToMove, problemPhotos);
-            Console.WriteLine("export");
-            ExportFolders(foldersToMove);
-            ExportProblemFiles(problemPhotos);
-            var listFolders = foldersToMove.Values.ToList();
+            var exportFileName = @"c:\temp\foldersToMove.json";
+            if(!isExportFileExists) {
+                List<PhotoData> problemPhotos = new List<PhotoData>();
+                Console.WriteLine("process");
+                ProcessFolders(sourceFolder, destinationFolder, foldersToMove, problemPhotos);
+                Console.WriteLine("export");
+                ExportFolders(foldersToMove, exportFileName);
+                ExportProblemFiles(problemPhotos);
+            }
+            else {
+                var inputString = File.ReadAllText(exportFileName);
+                foldersToMove = JsonSerializer.Deserialize<Dictionary<string, FolderData>>(inputString);
+                
+            }
+            var listFolders = foldersToMove.Values.OrderBy(x=>x.Name).ToList();
             if(copyFiles) {
                 Console.WriteLine("copy");
                 CopyFiles(listFolders);
@@ -37,6 +47,7 @@ namespace MovePhotos.Classes {
         }
 
         void CopyFiles(List<FolderData> foldersToMove) {
+            List<PhotoData> problemPhotos = new List<PhotoData>();
             foreach(var folder in foldersToMove) {
                 Console.WriteLine(folder.Name + " start");
                 if(!folder.Exists) {
@@ -45,10 +56,14 @@ namespace MovePhotos.Classes {
                 int k = 0;
                 foreach(var file in folder.Photos) {
                     if(file.IsExists) {
+                        problemPhotos.Add(file);
                         continue;
                     }
                     var sourceName = Path.Combine(file.SourcePath, file.Name);
                     var targetName = file.DestinationPath;
+                    if(File.Exists(targetName)) {
+                        continue;
+                    }
                     if(file.ShouldCopy) {
                         File.Copy(sourceName, targetName);
                     }
@@ -60,7 +75,10 @@ namespace MovePhotos.Classes {
                 }
                 Console.WriteLine();
                 Console.WriteLine(folder.Name + " done");
+                
             }
+            ExportProblemFiles(problemPhotos);
+            Console.WriteLine("all done");
         }
 
 
@@ -97,10 +115,10 @@ namespace MovePhotos.Classes {
                 var folderNameForPhoto = GetCommonFolderName(fileModifiedDate);
                 var photoData = new PhotoData(photoName, fileModifiedDate, rootFolder);
                 var initialFolderName = Path.GetFileName(rootFolder);
-                if(initialFolderName.StartsWith("Kate") || initialFolderName.StartsWith("Best")) {
-                    folderNameForPhoto = initialFolderName;
-                    photoData.ShouldCopy = true;
-                }
+                //if(initialFolderName.StartsWith("Kate") || initialFolderName.StartsWith("Best")) {
+                //    folderNameForPhoto = initialFolderName;
+                //    photoData.ShouldCopy = true;
+                //}
                 var folderData = GetFolder(foldersToMove, folderNameForPhoto, destinationFolder);
 
                 photoData.DestinationPath = Path.Combine(destinationFolder, folderNameForPhoto, photoName);
@@ -124,14 +142,14 @@ namespace MovePhotos.Classes {
 
             File.WriteAllText(@"c:\temp\problemPhotos.json", jsonString);
         }
-        void ExportFolders(Dictionary<string, FolderData> foldersToMove) {
+        void ExportFolders(Dictionary<string, FolderData> foldersToMove, string fileName) {
             var options = new JsonSerializerOptions {
                 Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
                 WriteIndented = true
             };
             string jsonString = JsonSerializer.Serialize(foldersToMove, options);
 
-            File.WriteAllText(@"c:\temp\foldersToMove.json", jsonString);
+            File.WriteAllText(fileName, jsonString);
         }
         FolderData GetFolder(Dictionary<string, FolderData> folders, string folder, string destinationFolder) {
             var res = folders.ContainsKey(folder) ? folders[folder] : null;
@@ -144,11 +162,12 @@ namespace MovePhotos.Classes {
             }
             return res;
         }
-        void GetConfig(out string sourceFolder, out string destinationFolder, out bool copyFiles) {
+        void GetConfig(out string sourceFolder, out string destinationFolder, out bool copyFiles, out bool isExportFileExists) {
             string[] pathes = File.ReadAllLines("rootPath.txt");
             sourceFolder = pathes[0];
             destinationFolder = pathes[1];
             copyFiles = bool.Parse(pathes[2]);
+            isExportFileExists = bool.Parse(pathes[3]);
         }
         public string GetPhotoModifiedTime(string path) {
             DateTime modDate = File.GetLastWriteTime(path);

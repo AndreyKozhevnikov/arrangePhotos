@@ -11,6 +11,9 @@ namespace MovePhotos.Classes {
             ModifiedDate = _modifieDate;
             SourcePath = _sourcePath;
         }
+        public PhotoData() {
+
+        }
         public string Name { get; set; }
         public string ModifiedDate { get; set; }
         public string SourcePath { get; set; }

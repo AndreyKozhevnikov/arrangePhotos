@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="FileInstances">
       <HintPath>..\..\CreateIndicies\FileInstances\bin\Debug\net6.0\FileInstances.dll</HintPath>
     </Reference>

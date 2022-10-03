@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace GetFoldersWithDups.Classes {
     public class PhotoHolder {
-        public PhotoHolder(string _name, string _dateStamp, string _size) {
+        public PhotoHolder(string _name) {
 
             Paths = new List<string>();
             Name= _name;
-            DateStamp= _dateStamp;
-            Size= _size;
         }
         public string Name { get; set; }
-        public string DateStamp{ get; set; }
+        public string CreatedTime{ get; set; }
+        public string ModifiedTime{ get; set; }
         public string Size{ get; set; }
 
         public List<string> Paths{ get; set; }
+
+        public string Key { get; set; }
     }
 }

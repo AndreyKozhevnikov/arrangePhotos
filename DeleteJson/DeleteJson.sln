@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeleteJson", "DeleteJson\DeleteJson.csproj", "{87151B4F-9977-4D76-A093-9B523DDBDFCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87151B4F-9977-4D76-A093-9B523DDBDFCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87151B4F-9977-4D76-A093-9B523DDBDFCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87151B4F-9977-4D76-A093-9B523DDBDFCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87151B4F-9977-4D76-A093-9B523DDBDFCE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D95FB4E-3FE8-4514-80C0-22ED8D17CCE5}
+	EndGlobalSection
+EndGlobal

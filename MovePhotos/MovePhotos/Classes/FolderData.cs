@@ -10,6 +10,9 @@ namespace MovePhotos.Classes {
             Name = _name;
             Photos = new List<PhotoData>();
         }
+        public FolderData() {
+
+        }
         public string Name { get; set; }
         public bool Exists { get; set; }
         public List<PhotoData> Photos { get; set; }

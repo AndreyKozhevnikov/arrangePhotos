@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CreateIndicies.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,78 +11,105 @@ using System.Threading.Tasks;
 namespace GetFoldersWithDups.Classes {
     public class Worker {
         public void Process() {
-            List<String> lines = GetDataFromCSV();
+            List<PhotoData> lines = GetDataFromCSV();
             var dupPhotos = BuildDuplicatesPhotos(lines);
 
             var dupFolders = BuildDuplicatesFolders(dupPhotos);
+           // dupFolders = dupFolders.OrderByDescending(x => x.DuplicateFolders.Count()).ToList();
+            dupFolders = dupFolders.OrderBy(x => x.Name).ToList();
             var options = new JsonSerializerOptions {
                 Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
                 WriteIndented = true
             };
             string jsonString = JsonSerializer.Serialize(dupFolders, options);
 
-            File.WriteAllTextAsync(@"c:\Dropbox\C#\RenamePhotos\Mydups.json", jsonString);
+            File.WriteAllText(@"c:\temp\Mydups.json", jsonString);
+            Console.WriteLine("done");
+            Console.ReadKey();
         }
 
         private List<FolderHolder> BuildDuplicatesFolders(List<PhotoHolder> dupPhotos) {
             var foldersDict = new Dictionary<string, FolderHolder>();
 
             foreach(var photo in dupPhotos) {
-                var firstFolderName = photo.Paths[0];
+                var firstFolderName = Path.GetDirectoryName(photo.Paths[0]);
                 FolderHolder firstFolder;
                 if(foldersDict.ContainsKey(firstFolderName)) {
                     firstFolder = foldersDict[firstFolderName];
                     firstFolder.AllDupsCount++;
-                    
-                } else {
+
+                }
+                else {
                     firstFolder = new FolderHolder(firstFolderName);
                     foldersDict[firstFolderName] = firstFolder;
                 }
                 for(int i = 1; i < photo.Paths.Count; i++) {
-                    var dupFolderName = photo.Paths[i];
+                    var dupFolderName = Path.GetDirectoryName(photo.Paths[i]);
                     if(firstFolder.DuplicateFolders.ContainsKey(dupFolderName)) {
                         var dupFolder = firstFolder.DuplicateFolders[dupFolderName];
                         dupFolder.PhotoNames.Add(photo.Name);
-                    } else {
+                    }
+                    else {
                         firstFolder.DuplicateFolders[dupFolderName] = new DuplicateFolder(dupFolderName);
                         firstFolder.DuplicateFolders[dupFolderName].PhotoNames.Add(photo.Name);
                     }
                 }
             }
+            var folderList = foldersDict.Values.ToList();
 
 
-            return foldersDict.Values.ToList();
+            return folderList;
 
         }
 
-        List<PhotoHolder> BuildDuplicatesPhotos(List<string> lines) {
+        List<PhotoHolder> BuildDuplicatesPhotos(List<PhotoData> photos) {
             Dictionary<string, PhotoHolder> photoDict = new Dictionary<string, PhotoHolder>();
             List<PhotoHolder> duplicates = new List<PhotoHolder>();
             int k = 0;
-            foreach(var line in lines) {
-                var data = line.Split(";");
-                var fullPath = Path.GetDirectoryName(data[0]);
-                var name = data[1];
-                var dateStamp = data[2];
-                var size = data[3];
-                var key = name + dateStamp + size;
-                if(photoDict.ContainsKey(key)) {
-                    var existingPhoto = photoDict[key];
-                    if(existingPhoto.DateStamp == dateStamp && existingPhoto.Size == size) {
-                        existingPhoto.Paths.Add(fullPath);
-                        var isAlreadyDups = duplicates.Where(x => x.Name == existingPhoto.Name).Count() > 0;
-                        if(!isAlreadyDups) {
-                            duplicates.Add(existingPhoto);
+            foreach(var photo in photos) {
+                // var data = line.Split(";");
+                var fullPath = photo.FullName;
+                if(fullPath.Contains("Kate") || fullPath.Contains("Best") ||fullPath.Contains("Repair")) {
+                    continue;
+                }
+                var name = photo.Name;
+                if(name == "P1010125.JPG") {
+                    var t = 3;
+                    var k1 = t + 1;
+                }
+                var createdTime = photo.CreatedTime;
+                var modifiedTime = photo.ModifiedTime;
+                var size = photo.Size;
+                List<string> keys = new List<string>();
+                keys.Add(name+modifiedTime);
+                if(createdTime != null && modifiedTime != createdTime) {
+                    keys.Add(name+ createdTime);
+                }
+                foreach(var key in keys) {
+                    if(photoDict.ContainsKey(key)) {
+                        var existingPhoto = photoDict[key];
+                        if(existingPhoto.CreatedTime == photo.CreatedTime || existingPhoto.ModifiedTime == photo.ModifiedTime) {
+                            existingPhoto.Paths.Add(fullPath);
+                            var isAlreadyDups = duplicates.Where(x => x.Key == key).Count() > 0;
+                            if(!isAlreadyDups) {
+                                duplicates.Add(existingPhoto);
+                            }
                         }
-                    } else {
-                        throw new Exception(String.Format("photo with the same name {0} {1}", fullPath, name));
+                        else {
+                            // throw new Exception(String.Format("photo with the same name {0} {1}", fullPath, name));
+                        }
                     }
-                } else {
-                    photoDict[key] = new PhotoHolder(name, dateStamp, size);
-                    photoDict[key].Paths.Add(fullPath);
+                    else {
+                        photoDict[key] = new PhotoHolder(name);
+                        photoDict[key].ModifiedTime = modifiedTime;
+                        photoDict[key].CreatedTime = createdTime;
+                        photoDict[key].Size = size;
+                        photoDict[key].Paths.Add(fullPath);
+                        photoDict[key].Key = key;
+                    }
                 }
                 k++;
-                if(k % 10000 == 0) {
+                if(k % 5000 == 0) {
                     Console.WriteLine(k);
                 }
             }
@@ -89,10 +117,11 @@ namespace GetFoldersWithDups.Classes {
             return duplicates;
         }
 
-        List<string> GetDataFromCSV() {
-            var path = @"c:\Dropbox\C#\RenamePhotos\MyCSVExport.csv";
-            string[] lines = System.IO.File.ReadAllLines(path);
-            return lines.ToList();
+        List<PhotoData> GetDataFromCSV() {
+            var path = @"c:\temp\allPhotos.json";
+            var indexText = File.ReadAllText(path);
+            var indexList = JsonSerializer.Deserialize<List<PhotoData>>(indexText);
+            return indexList;
         }
     }
 
